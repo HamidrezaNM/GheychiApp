@@ -692,8 +692,8 @@
                             <TextBlock IsVisible="{Binding Thread.HasNoIcon}"
                                        Text="{Binding Thread.Initials}"
                                        Foreground="{Binding Thread.AvatarTextColor}"
-                                       FontSize="17"
-                                       FontFamily="{x:Static app:AppFonts.Bold}"
+                                       FontSize="24"
+                                       FontFamily="{x:Static app:AppFonts.Regular}"
                                        HorizontalAlignment="Center"
                                        VerticalAlignment="Center"
                                        TextAlignment="Center" />
@@ -1015,8 +1015,8 @@
             <!-- Row 2: Bottom SMS Input Bar (Hidden in selection mode); for a blocked sender, the way to unblock -->
             <StackPanel Grid.Row="2"
                         IsVisible="{Binding IsInputBarVisible}"
-                        Margin="10,8,10,12"
-                        Spacing="6">
+                        Spacing="6"
+                        Background="#121212">
                 <!-- A message held by the send delay: it goes out when the count ends, and Undo takes it back -->
                 <Border IsVisible="{Binding Pending.HasDelayed}"
                         Padding="16,8,8,8"
@@ -1093,7 +1093,7 @@
                                  VerticalAlignment="Center" />
                     </Grid>
                 </Border>
-                <Grid>
+                <Grid Margin="10,8,10,12">
                     <Border x:Name="BlockedBar"
                             IsVisible="False"
                             Padding="16,9"
@@ -1125,9 +1125,9 @@
                     <Grid x:Name="Composer" ColumnDefinitions="*,Auto,Auto">
                         <Border Grid.Column="0"
                                 Padding="12,0,4,0"
-                                MinHeight="44"
-                                CornerRadius="22"
-                                Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
+                                MinHeight="54"
+                                CornerRadius="27"
+                                Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1E1F22}"
                                 VerticalAlignment="Center"
                                 Tapped="OnInputBarTapped">
                             <Grid ColumnDefinitions="*,Auto">
@@ -1148,7 +1148,7 @@
                                 <Border x:Name="EmojiButton"
                                         Grid.Column="1"
                                         Width="36" Height="36"
-                                        Margin="4,0,0,4"
+                                        Margin="4,0,0,9"
                                         CornerRadius="18"
                                         Background="Transparent"
                                         VerticalAlignment="Bottom"
@@ -1164,9 +1164,9 @@
                             </Grid>
                         </Border>
                         <Border Grid.Column="1"
-                                Margin="6,0,0,0"
-                                Width="40" Height="40"
-                                CornerRadius="20"
+                                Margin="8,0,0,0"
+                                Width="54" Height="54"
+                                CornerRadius="27"
                                 Background="{Binding SimBadgeColor}"
                                 VerticalAlignment="Center"
                                 AutomationProperties.Name="{loc:Translate Chat_Sim}"
@@ -1188,9 +1188,9 @@
                         <!-- Only with something to send (see UpdateSendButton) -->
                         <Border x:Name="SendButton"
                                 Grid.Column="2"
-                                Margin="6,0,0,0"
-                                Width="54" Height="44"
-                                CornerRadius="22"
+                                Margin="8,0,0,0"
+                                Width="54" Height="54"
+                                CornerRadius="27"
                                 Background="{StaticResource PrimaryBrush}"
                                 VerticalAlignment="Center"
                                 IsVisible="False"
@@ -1200,7 +1200,7 @@
                                 Tapped="OnSend">
                             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
                                 <ui:Icon Data="{StaticResource Icon.Send}"
-                                         Width="18" Height="18"
+                                         Width="20" Height="20"
                                          HorizontalAlignment="Center"
                                          Foreground="White" />
                                 <TextBlock Text="{loc:Translate Chat_SendLabel}"
