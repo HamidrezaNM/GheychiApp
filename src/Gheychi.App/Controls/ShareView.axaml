@@ -99,12 +99,14 @@
                       Background="Transparent"
                       Tapped="OnNumberTapped">
                     <Border Grid.Column="0"
+                            x:Name="NumberAvatar"
                             Width="50" Height="50"
                             Margin="15,0,0,0"
                             CornerRadius="25"
                             VerticalAlignment="Center"
                             Background="{theme:AccentBrush Role=Soft}">
-                        <ui:Icon Data="{StaticResource Icon.Person}"
+                        <ui:Icon x:Name="NumberAvatarIcon"
+                                 Data="{StaticResource Icon.Person}"
                                  Width="27" Height="27"
                                  Foreground="{theme:AccentBrush Role=Text}" />
                     </Border>
@@ -157,7 +159,7 @@
                                                      Data="{Binding IconFile, Converter={x:Static ui:IconFileConverter.Instance}, Mode=OneTime}"
                                                      Width="27"
                                                      Height="27"
-                                                     Foreground="{theme:AccentBrush Role=Text}"
+                                                     Foreground="{Binding AvatarTextColor, Mode=OneTime}"
                                                      HorizontalAlignment="Center"
                                                      VerticalAlignment="Center" />
                                             <TextBlock Text="{Binding Initials, Mode=OneTime}"

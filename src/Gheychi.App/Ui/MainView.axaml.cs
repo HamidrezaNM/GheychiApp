@@ -306,7 +306,7 @@ public partial class MainView : UserControl
         page.IsVisible = false;
         // Opaque, so a page sliding over another hides it instead of showing through.
         if (page is UserControl surface)
-            surface.Background = Palette.Pick("#F1F3F4", "#121212");
+            surface.Background = Palette.Pick("#F1F3F4", "#1E1F22");
         if (page is MessagesPage messages)
         {
             messages.SetSettingsBadge(_settingsBadge);

@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Gheychi.App.Theming;
 using Gheychi.App.Ui;
 using Gheychi.App.ViewModels;
 
@@ -18,6 +19,10 @@ public partial class ContactChip : UserControl
     {
         Number = number;
         ContactName.Text = name;
+        var (background, ink) = AvatarPalette.Resolve(number);
+        AvatarCircle.Background = background;
+        ContactIcon.Foreground = ink;
+        ContactInitials.Foreground = ink;
         var icon = IconCatalog.Find(ThreadItem.DetectIcon(name, number));
         ContactIcon.Data = icon;
         ContactIcon.IsVisible = icon is not null;

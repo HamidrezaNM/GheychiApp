@@ -209,6 +209,10 @@ public partial class ProfileView : UserControl
         AvatarIcon.IsVisible = _thread.HasIcon;
         AvatarInitials.Text = _thread.Initials;
         AvatarInitials.IsVisible = _thread.HasNoIcon;
+        var (avatarBackground, avatarInk) = AvatarPalette.Resolve(_thread.Phone);
+        AvatarCircle.Background = avatarBackground;
+        AvatarIcon.Foreground = avatarInk;
+        AvatarInitials.Foreground = avatarInk;
         AvatarPhoto.SetAddress(AvatarCircle, _thread.PhotoAddress);
     }
 

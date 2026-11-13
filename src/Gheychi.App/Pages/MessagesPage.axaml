@@ -16,7 +16,7 @@
                 <Panel Height="62">
                     <Grid IsVisible="{Binding IsNotSelectionMode}" Margin="22,10,10,12" ColumnDefinitions="*,Auto,Auto,Auto">
                         <TextBlock Grid.Column="0"
-                                   Text="Gheychi"
+                                   Text="Gheychi45"
                                    ui:TextDirection.KeepSide="True"
                                    FontSize="22"
                                    FontFamily="{x:Static app:AppFonts.Bold}"
@@ -73,194 +73,76 @@
                             <ui:Icon Data="{StaticResource Icon.Search}" Width="20" Height="20" Foreground="{theme:ThemeBrush Light=#2E3032, Dark=#E8EAED}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                     </Grid>
-                <Grid IsVisible="{Binding IsSelectionMode}"
-                      Margin="16,0"
-                      ColumnDefinitions="Auto,*,Auto,Auto,Auto"
-                      ColumnSpacing="6"
-                      VerticalAlignment="Center">
-                    <Border Grid.Column="0" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnExitSelectionModeTapped">
-                        <ui:Icon Data="{StaticResource Icon.Close}" Width="20" Height="20" Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
+                    <Grid IsVisible="{Binding IsSelectionMode}"
+                          Margin="16,0"
+                          ColumnDefinitions="Auto,*,Auto,Auto,Auto"
+                          ColumnSpacing="6"
+                          VerticalAlignment="Center">
+                        <Border Grid.Column="0" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnExitSelectionModeTapped">
+                            <ui:Icon Data="{StaticResource Icon.Close}" Width="20" Height="20" Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
 
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding SelectedCountText}"
-                               FontSize="18"
-                               FontFamily="{x:Static app:AppFonts.Bold}"
-                               Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}"
-                               VerticalAlignment="Center"
-                               HorizontalAlignment="Left"
-                               Margin="8,0,0,0" />
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding SelectedCountText}"
+                                   FontSize="18"
+                                   FontFamily="{x:Static app:AppFonts.Bold}"
+                                   Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left"
+                                   Margin="8,0,0,0" />
 
-                    <Border Grid.Column="2" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnDeleteSelectedThreadsTapped">
-                        <ui:Icon Data="{StaticResource Icon.Trash}" Width="21" Height="21" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
+                        <Border Grid.Column="2" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnDeleteSelectedThreadsTapped">
+                            <ui:Icon Data="{StaticResource Icon.Trash}" Width="21" Height="21" Foreground="#EF4444" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
 
-                    <Border Grid.Column="3" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnArchiveSelectedThreadsTapped">
-                        <ui:Icon Data="{StaticResource Icon.Archive}" Width="21" Height="21" Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
+                        <Border Grid.Column="3" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnArchiveSelectedThreadsTapped">
+                            <ui:Icon Data="{StaticResource Icon.Archive}" Width="21" Height="21" Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
 
-                    <Border Grid.Column="4" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnThreeDotsTapped">
-                        <ui:Icon Data="{StaticResource Icon.MoreVert}" Width="21" Height="21" Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" HorizontalAlignment="Center" VerticalAlignment="Center" />
-                    </Border>
-                </Grid>
+                        <Border Grid.Column="4" Width="42" Height="42" CornerRadius="21" Background="Transparent" Tapped="OnThreeDotsTapped">
+                            <ui:Icon Data="{StaticResource Icon.MoreVert}" Width="21" Height="21" Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </Grid>
                 </Panel>
-                    <!-- The folder tabs: nothing here until the user makes a folder -->
-                    <ui:DragScroll x:Name="FolderScroll"
-                                   IsVisible="{Binding FolderBar.IsVisible}"
-                                   Margin="0,0,0,12">
-                        <ItemsControl ItemsSource="{Binding FolderBar.Pills}" Margin="16,0">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="8" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:FolderPill">
-                                    <Border Height="36"
-                                            Padding="13,0,13,0"
-                                            CornerRadius="18"
-                                            Background="{Binding Fill}"
-                                            PointerPressed="OnFolderPillPressed"
-                                            Tapped="OnFolderPillTapped"
-                                            Holding="OnFolderPillHolding">
-                                        <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
-                                            <ui:Icon Data="{Binding Icon}"
-                                                     Width="16"
-                                                     Height="16"
-                                                     Foreground="{Binding TextBrush}"
-                                                     VerticalAlignment="Center" />
-                                            <TextBlock Text="{Binding Title}"
-                                                       ui:TextDirection.KeepSide="True"
-                                                       FontSize="13.5"
-                                                       FontFamily="{Binding Font}"
-                                                       Foreground="{Binding TextBrush}"
-                                                       VerticalAlignment="Center" />
-                                            <Border IsVisible="{Binding HasUnread}"
-                                                    MinWidth="20"
-                                                    Height="20"
-                                                    Padding="6,0"
-                                                    CornerRadius="10"
-                                                    Background="{Binding BadgeFill}"
-                                                    VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding UnreadText}"
-                                                           FontSize="11.5"
-                                                           FontFamily="{x:Static app:AppFonts.Bold}"
-                                                           Foreground="White"
-                                                           HorizontalAlignment="Center"
-                                                           VerticalAlignment="Center" />
-                                            </Border>
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ui:DragScroll>
-            </StackPanel>
-
-            <Panel Grid.Row="1">
-                <Border CornerRadius="28,28,0,0"
-                        ClipToBounds="True"
-                        Background="{theme:ThemeBrush Light=#FFFFFF, Dark=#1E1F22}">
-                <Panel x:Name="ThreadsHost">
-                <ItemsControl x:Name="ThreadsList"
-                              Margin="0,10,0,0"
-                              ItemsSource="{Binding Threads}"
-                              Tapped="OnThreadsTapped"
-                              Holding="OnThreadsHolding">
-                    <ItemsControl.Transitions>
-                        <Transitions>
-                            <DoubleTransition Property="Opacity" Duration="0:0:0.09" />
-                        </Transitions>
-                    </ItemsControl.Transitions>
-                    <ItemsControl.Template>
-                        <ControlTemplate>
-                            <ScrollViewer x:Name="ThreadsScroll" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
-                                <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" />
-                            </ScrollViewer>
-                        </ControlTemplate>
-                    </ItemsControl.Template>
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:ThreadItem">
-                            <Grid Height="76"
-                                  ColumnDefinitions="Auto,*,Auto"
-                                  ColumnSpacing="15"
-                                  Background="{Binding RowBackgroundColor}">
-                                <Border Grid.Column="0"
-                                        Width="50"
-                                        Height="50"
-                                        Margin="15,0,0,0"
-                                        CornerRadius="25"
-                                        VerticalAlignment="Center"
-                                        IsHitTestVisible="False"
-                                        ui:AvatarPhoto.Address="{Binding PhotoAddress}"
-                                        ui:AvatarPhoto.Hidden="{Binding IsSelected}"
-                                        Background="{Binding AvatarBgColor}">
-                                    <Panel>
-                                        <ui:Icon IsVisible="{Binding ShowIcon}"
-                                                 Data="{Binding IconFile, Converter={x:Static ui:IconFileConverter.Instance}}"
-                                                 Width="27"
-                                                 Height="27"
-                                                 Foreground="{theme:AccentBrush Role=Text}"
-                                                 HorizontalAlignment="Center"
+                <!-- The folder tabs: nothing here until the user makes a folder -->
+                <ui:DragScroll x:Name="FolderScroll"
+                               IsVisible="{Binding FolderBar.IsVisible}"
+                               Margin="0,0,0,12">
+                    <ItemsControl ItemsSource="{Binding FolderBar.Pills}" Margin="16,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" Spacing="8" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:FolderPill">
+                                <Border Height="36"
+                                        Padding="13,0,13,0"
+                                        CornerRadius="18"
+                                        Background="{Binding Fill}"
+                                        PointerPressed="OnFolderPillPressed"
+                                        Tapped="OnFolderPillTapped"
+                                        Holding="OnFolderPillHolding">
+                                    <StackPanel Orientation="Horizontal" Spacing="7" VerticalAlignment="Center">
+                                        <ui:Icon Data="{Binding Icon}"
+                                                 Width="16"
+                                                 Height="16"
+                                                 Foreground="{Binding TextBrush}"
                                                  VerticalAlignment="Center" />
-                                        <TextBlock Text="{Binding Initials}"
-                                                   IsVisible="{Binding ShowInitials}"
-                                                   Foreground="{Binding AvatarTextColor}"
-                                                   FontSize="21"
-                                                   FontFamily="{x:Static app:AppFonts.Bold}"
-                                                   HorizontalAlignment="Center"
-                                                   VerticalAlignment="Center"
-                                                   TextAlignment="Center" />
-                                        <ui:Icon IsVisible="{Binding IsSelected}"
-                                                 Data="{StaticResource Icon.Check}"
-                                                 Width="25"
-                                                 Height="25"
-                                                 Foreground="White"
-                                                 HorizontalAlignment="Center"
-                                                 VerticalAlignment="Center" />
-                                    </Panel>
-                                </Border>
-
-                                <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center" IsHitTestVisible="False">
-                                    <TextBlock Text="{Binding Name}"
-                                               ui:TextDirection.KeepSide="True"
-                                               Foreground="{Binding NameColor}"
-                                               FontSize="15"
-                                               FontFamily="{Binding NameFont}"
-                                               TextTrimming="CharacterEllipsis"
-                                               MaxLines="1" />
-                                    <TextBlock Text="{Binding Preview}"
-                                               ui:TextDirection.KeepSide="True"
-                                               Foreground="{Binding PreviewColor}"
-                                               FontFamily="{Binding PreviewFont}"
-                                               FontSize="13.5"
-                                               TextTrimming="CharacterEllipsis"
-                                               MaxLines="1" />
-                                </StackPanel>
-
-                                <StackPanel Grid.Column="2" Spacing="6" Margin="0,0,17,0" VerticalAlignment="Center" HorizontalAlignment="Right" IsHitTestVisible="False">
-                                    <TextBlock Text="{Binding Time}"
-                                               FontSize="11.5"
-                                               FontFamily="{Binding PreviewFont}"
-                                               Foreground="{Binding TimeColor}"
-                                               HorizontalAlignment="Right" />
-                                    <StackPanel IsVisible="{Binding ShowBadgeRow}" Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right">
-                                        <ui:Icon IsVisible="{Binding IsPinned}"
-                                                 Data="{StaticResource Icon.Pin}"
-                                                 Width="15"
-                                                 Height="15"
-                                                 Foreground="{Binding TimeColor}"
-                                                 VerticalAlignment="Center" />
-                                        <Border IsVisible="{Binding IsUnread}"
-                                                Padding="8,2"
-                                                CornerRadius="11"
-                                                Background="{StaticResource PrimaryBrush}">
-                                            <TextBlock Text="{Binding CountText}"
+                                        <TextBlock Text="{Binding Title}"
+                                                   ui:TextDirection.KeepSide="True"
+                                                   FontSize="13.5"
+                                                   FontFamily="{Binding Font}"
+                                                   Foreground="{Binding TextBrush}"
+                                                   VerticalAlignment="Center" />
+                                        <Border IsVisible="{Binding HasUnread}"
+                                                MinWidth="20"
+                                                Height="20"
+                                                Padding="6,0"
+                                                CornerRadius="10"
+                                                Background="{Binding BadgeFill}"
+                                                VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding UnreadText}"
                                                        FontSize="11.5"
                                                        FontFamily="{x:Static app:AppFonts.Bold}"
                                                        Foreground="White"
@@ -268,21 +150,140 @@
                                                        VerticalAlignment="Center" />
                                         </Border>
                                     </StackPanel>
-                                </StackPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-                <TextBlock IsVisible="{Binding IsFolderEmpty}"
-                           Text="{loc:Translate Folder_Empty}"
-                           Margin="32,0"
-                           FontSize="14"
-                           Foreground="{theme:ThemeBrush Light=#595C61, Dark=#9AA0AB}"
-                           TextAlignment="Center"
-                           TextWrapping="Wrap"
-                           HorizontalAlignment="Center"
-                           VerticalAlignment="Center" />
-                </Panel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ui:DragScroll>
+            </StackPanel>
+
+            <Panel Grid.Row="1">
+                <Border CornerRadius="28,28,0,0"
+                        ClipToBounds="True"
+                        Background="{theme:ThemeBrush Light=#FFFFFF, Dark=#121212}">
+                    <Panel x:Name="ThreadsHost">
+                        <ItemsControl x:Name="ThreadsList"
+                                      Margin="0,0,0,0"
+                                      ItemsSource="{Binding Threads}"
+                                      Tapped="OnThreadsTapped"
+                                      Holding="OnThreadsHolding">
+                            <ItemsControl.Transitions>
+                                <Transitions>
+                                    <DoubleTransition Property="Opacity" Duration="0:0:0.09" />
+                                </Transitions>
+                            </ItemsControl.Transitions>
+                            <ItemsControl.Template>
+                                <ControlTemplate>
+                                    <ScrollViewer x:Name="ThreadsScroll" VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Disabled">
+                                        <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:ThreadItem">
+                                    <Border CornerRadius="38" Height="76" Background="{Binding RowBackgroundColor}" Margin="2">
+                                        <Grid Height="76"
+                                              ColumnDefinitions="Auto,*,Auto"
+                                              ColumnSpacing="15">
+                                            <Border Grid.Column="0"
+                                                    Width="54"
+                                                    Height="54"
+                                                    Margin="11,0,0,0"
+                                                    CornerRadius="27"
+                                                    VerticalAlignment="Center"
+                                                    IsHitTestVisible="False"
+                                                    ui:AvatarPhoto.Address="{Binding PhotoAddress}"
+                                                    ui:AvatarPhoto.Hidden="{Binding IsSelected}"
+                                                    Background="{Binding AvatarBgColor}">
+                                                <Panel>
+                                                    <ui:Icon IsVisible="{Binding ShowIcon}"
+                                                             Data="{Binding IconFile, Converter={x:Static ui:IconFileConverter.Instance}}"
+                                                             Width="27"
+                                                             Height="27"
+                                                             Foreground="{Binding AvatarTextColor}"
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center" />
+                                                    <TextBlock Text="{Binding Initials}"
+                                                               IsVisible="{Binding ShowInitials}"
+                                                               Foreground="{Binding AvatarTextColor}"
+                                                               FontSize="32"
+                                                               FontFamily="{x:Static app:AppFonts.Regular}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               TextAlignment="Center" />
+                                                    <ui:Icon IsVisible="{Binding IsSelected}"
+                                                             Data="{StaticResource Icon.Check}"
+                                                             Width="27"
+                                                             Height="27"
+                                                             Foreground="White"
+                                                             HorizontalAlignment="Center"
+                                                             VerticalAlignment="Center" />
+                                                </Panel>
+                                            </Border>
+
+                                            <StackPanel Grid.Column="1" Spacing="2" VerticalAlignment="Center" IsHitTestVisible="False">
+                                                <TextBlock Text="{Binding Name}"
+                                                           ui:TextDirection.KeepSide="True"
+                                                           Foreground="{Binding NameColor}"
+                                                           FontSize="15"
+                                                           FontFamily="{Binding NameFont}"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           MaxLines="1" />
+                                                <TextBlock Text="{Binding Preview}"
+                                                           ui:TextDirection.KeepSide="True"
+                                                           Foreground="{Binding PreviewColor}"
+                                                           FontFamily="{Binding PreviewFont}"
+                                                           FontSize="13.5"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           MaxLines="1" />
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2" Spacing="6" Margin="0,0,17,0" VerticalAlignment="Center" HorizontalAlignment="Right" IsHitTestVisible="False">
+                                                <TextBlock Text="{Binding Time}"
+                                                           FontSize="11.5"
+                                                           FontFamily="{Binding PreviewFont}"
+                                                           Foreground="{Binding TimeColor}"
+                                                           HorizontalAlignment="Right" />
+                                                <StackPanel Orientation="Horizontal" Spacing="6" HorizontalAlignment="Right" Height="15">
+                                                    <ui:Icon IsVisible="{Binding IsPinned}"
+                                                             Data="{StaticResource Icon.Pin}"
+                                                             Width="15"
+                                                             Height="15"
+                                                             Foreground="{Binding TimeColor}"
+                                                             VerticalAlignment="Center" />
+                                                    <Border IsVisible="{Binding IsUnread}"
+                                                            Padding="8,2"
+                                                            CornerRadius="11"
+                                                            Background="{StaticResource PrimaryBrush}">
+                                                        <TextBlock Text="{Binding CountText}"
+                                                                   FontSize="11.5"
+                                                                   FontFamily="{x:Static app:AppFonts.Bold}"
+                                                                   Foreground="White"
+                                                                   HorizontalAlignment="Center"
+                                                                   VerticalAlignment="Center" />
+                                                    </Border>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                        <TextBlock IsVisible="{Binding IsFolderEmpty}"
+                                   Text="{loc:Translate Folder_Empty}"
+                                   Margin="32,0"
+                                   FontSize="14"
+                                   Foreground="{theme:ThemeBrush Light=#595C61, Dark=#9AA0AB}"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" />
+                    </Panel>
                 </Border>
 
                 <Border Margin="0,0,24,24"

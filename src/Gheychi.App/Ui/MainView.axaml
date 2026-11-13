@@ -5,7 +5,7 @@
              xmlns:ui="clr-namespace:Gheychi.App.Ui"
              x:Class="Gheychi.App.Ui.MainView">
 
-    <Border x:Name="Root" Background="{theme:ThemeBrush Light=#F1F3F4, Dark=#121212}">
+    <Border x:Name="Root" Background="{theme:ThemeBrush Light=#F1F3F4, Dark=#1E1F22}">
     <Panel>
 
         <Panel x:Name="PageHost" />

@@ -11,11 +11,11 @@
 
     <UserControl.Resources>
         <!--
-            Message row templates. The list builds a row once per kind and re-binds it to the next message of that kind
-            (see ChatList), so what counts is the number of bindings per row, not the number of elements. Rare content
-            (links) has its own template, and state that changes while a row is bound (delivery, reaction, selection)
-            is one bound property each. The row's own columns and rows carry the old padding so the whole slot is a tap
-            target; taps and holds are handled once, on the list.
+        Message row templates. The list builds a row once per kind and re-binds it to the next message of that kind
+        (see ChatList), so what counts is the number of bindings per row, not the number of elements. Rare content
+        (links) has its own template, and state that changes while a row is bound (delivery, reaction, selection)
+        is one bound property each. The row's own columns and rows carry the old padding so the whole slot is a tap
+        target; taps and holds are handled once, on the list.
         -->
         <DataTemplate x:Key="IncomingTemplate" x:DataType="vm:ChatMessage">
             <Grid Background="Transparent"
@@ -654,7 +654,7 @@
         <Grid x:Name="PageContent"
               Focusable="True"
               RowDefinitions="Auto,*,Auto"
-              Background="{theme:ThemeBrush Light=#F1F3F4, Dark=#121212}">
+              Background="{theme:ThemeBrush Light=#F1F3F4, Dark=#1E1F22}">
 
             <!-- Row 0: Dual Header (Normal vs Selection Contextual Header) -->
             <Grid Grid.Row="0">
@@ -663,6 +663,7 @@
                       Margin="8,10"
                       ColumnDefinitions="Auto,Auto,*,Auto,Auto"
                       ColumnSpacing="10">
+
                     <Panel Grid.Column="0"
                            Width="24" Height="24"
                            VerticalAlignment="Center"
@@ -676,9 +677,9 @@
                                  Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" />
                     </Panel>
                     <Border Grid.Column="1"
-                            Width="48" Height="48"
-                            CornerRadius="24"
-                            Background="{theme:AccentBrush Role=Soft}"
+                            Width="42" Height="42"
+                            CornerRadius="26"
+                            Background="{Binding Thread.AvatarBgColor}"
                             ui:AvatarPhoto.Address="{Binding Thread.PhotoAddress}"
                             Tapped="OnHeaderTapped">
                         <Panel>
@@ -687,10 +688,10 @@
                                      Width="26" Height="26"
                                      HorizontalAlignment="Center"
                                      VerticalAlignment="Center"
-                                     Foreground="{theme:ThemeBrush Light=#393B3E, Dark=#DDDEDF}" />
+                                     Foreground="{Binding Thread.AvatarTextColor}" />
                             <TextBlock IsVisible="{Binding Thread.HasNoIcon}"
                                        Text="{Binding Thread.Initials}"
-                                       Foreground="{theme:AccentBrush Role=Text}"
+                                       Foreground="{Binding Thread.AvatarTextColor}"
                                        FontSize="17"
                                        FontFamily="{x:Static app:AppFonts.Bold}"
                                        HorizontalAlignment="Center"
@@ -900,112 +901,116 @@
                 </Border>
             </Grid>
 
-            <Grid Grid.Row="1">
-                <!--
+            <Border Grid.Row="1" CornerRadius="28,28,0,0"
+                    ClipToBounds="True"
+                    Background="{theme:ThemeBrush Light=#FFFFFF, Dark=#121212}">
+                <Grid>
+                    <!--
                     Bottom-anchored: the list is as tall as its rows until they fill the page, so a short chat sits
                     on the composer. The newest row is last and the view scrolls the panel to it.
-                -->
-                <c:ChatList x:Name="MessagesList"
-                            VerticalAlignment="Bottom"
-                            ItemsSource="{Binding Items}"
-                            Rows="{StaticResource ChatSelector}">
-                    <c:ChatList.Template>
-                        <ControlTemplate>
-                            <ScrollViewer x:Name="PART_Scroll"
-                                          Padding="0,0,0,10"
-                                          HorizontalScrollBarVisibility="Disabled"
-                                          VerticalScrollBarVisibility="Hidden">
-                                <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" />
-                            </ScrollViewer>
-                        </ControlTemplate>
-                    </c:ChatList.Template>
-                    <c:ChatList.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
-                        </ItemsPanelTemplate>
-                    </c:ChatList.ItemsPanel>
-                </c:ChatList>
+                    -->
+                    <c:ChatList x:Name="MessagesList"
+                                VerticalAlignment="Bottom"
+                                ItemsSource="{Binding Items}"
+                                Rows="{StaticResource ChatSelector}">
+                        <c:ChatList.Template>
+                            <ControlTemplate>
+                                <ScrollViewer x:Name="PART_Scroll"
+                                              Padding="0,0,0,10"
+                                              HorizontalScrollBarVisibility="Disabled"
+                                              VerticalScrollBarVisibility="Hidden">
+                                    <ItemsPresenter ItemsPanel="{TemplateBinding ItemsPanel}" />
+                                </ScrollViewer>
+                            </ControlTemplate>
+                        </c:ChatList.Template>
+                        <c:ChatList.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </c:ChatList.ItemsPanel>
+                    </c:ChatList>
 
-                <!--
+                    <!--
                     Part of a message selected (double tap): a read-only box laid over the bubble's text, with the same
                     letters in the same places. It draws only the selection and its handles; the text seen under them
                     is still the bubble's own, links and numbers included. Placed in code (ChatView.Selection.cs).
                     No SelectionForegroundBrush: the text is transparent already, and a selection foreground splits the
                     text into runs, which makes the handles' hit test throw on a Latin word in right-to-left text.
-                -->
-                <Canvas x:Name="SelectionLayer" ClipToBounds="True" Focusable="True">
-                    <TextBox x:Name="SelectionBox"
-                             Classes="plain"
-                             IsVisible="False"
-                             IsReadOnly="True"
-                             AcceptsReturn="True"
-                             TextWrapping="Wrap"
-                             VerticalContentAlignment="Top"
-                             Foreground="Transparent"
-                             CaretBrush="Transparent"
-                             SelectionForegroundBrush="{x:Null}" />
-                </Canvas>
+                    -->
+                    <Canvas x:Name="SelectionLayer" ClipToBounds="True" Focusable="True">
+                        <TextBox x:Name="SelectionBox"
+                                 Classes="plain"
+                                 IsVisible="False"
+                                 IsReadOnly="True"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 VerticalContentAlignment="Top"
+                                 Foreground="Transparent"
+                                 CaretBrush="Transparent"
+                                 SelectionForegroundBrush="{x:Null}" />
+                    </Canvas>
 
-                <Border Margin="0,8,0,0"
-                        Padding="12,4"
-                        CornerRadius="11"
-                        Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        IsVisible="{Binding HasStickyDate}"
-                        IsHitTestVisible="False">
-                    <TextBlock Text="{Binding StickyDate}"
-                               FontSize="11"
-                               Foreground="#8A8F98" />
-                </Border>
+                    <Border Margin="0,8,0,0"
+                            Padding="12,4"
+                            CornerRadius="11"
+                            Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            IsVisible="{Binding HasStickyDate}"
+                            IsHitTestVisible="False">
+                        <TextBlock Text="{Binding StickyDate}"
+                                   FontSize="11"
+                                   Foreground="#8A8F98" />
+                    </Border>
 
-                <StackPanel x:Name="SkeletonOverlay"
+                    <StackPanel x:Name="SkeletonOverlay"
+                                IsVisible="False"
+                                IsHitTestVisible="False"
+                                Margin="12,16"
+                                Spacing="14"
+                                VerticalAlignment="Bottom">
+                        <Border Width="210" Height="42"
+                                CornerRadius="16"
+                                Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
+                                HorizontalAlignment="Left" />
+                        <Border Width="180" Height="52"
+                                CornerRadius="16"
+                                Background="{theme:AccentBrush Role=Soft}"
+                                HorizontalAlignment="Right" />
+                        <Border Width="260" Height="46"
+                                CornerRadius="16"
+                                Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
+                                HorizontalAlignment="Left" />
+                        <Border Width="230" Height="42"
+                                CornerRadius="16"
+                                Background="{theme:AccentBrush Role=Soft}"
+                                HorizontalAlignment="Right" />
+                        <Border Width="160" Height="38"
+                                CornerRadius="16"
+                                Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
+                                HorizontalAlignment="Left" />
+                    </StackPanel>
+
+                    <Border x:Name="ScrollToBottomButton"
+                            Margin="0,0,16,16"
+                            Width="40" Height="40"
+                            CornerRadius="20"
+                            Background="{theme:ThemeBrush Light=#FFFFFF, Dark=#1C1F24}"
+                            BoxShadow="0 2 4 0 #4D000000"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
                             IsVisible="False"
-                            IsHitTestVisible="False"
-                            Margin="12,16"
-                            Spacing="14"
-                            VerticalAlignment="Bottom">
-                    <Border Width="210" Height="42"
-                            CornerRadius="16"
-                            Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
-                            HorizontalAlignment="Left" />
-                    <Border Width="180" Height="52"
-                            CornerRadius="16"
-                            Background="{theme:AccentBrush Role=Soft}"
-                            HorizontalAlignment="Right" />
-                    <Border Width="260" Height="46"
-                            CornerRadius="16"
-                            Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
-                            HorizontalAlignment="Left" />
-                    <Border Width="230" Height="42"
-                            CornerRadius="16"
-                            Background="{theme:AccentBrush Role=Soft}"
-                            HorizontalAlignment="Right" />
-                    <Border Width="160" Height="38"
-                            CornerRadius="16"
-                            Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
-                            HorizontalAlignment="Left" />
-                </StackPanel>
-
-                <Border x:Name="ScrollToBottomButton"
-                        Margin="0,0,16,16"
-                        Width="40" Height="40"
-                        CornerRadius="20"
-                        Background="{theme:ThemeBrush Light=#FFFFFF, Dark=#1C1F24}"
-                        BoxShadow="0 2 4 0 #4D000000"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        IsVisible="False"
-                        Opacity="0"
-                        Tapped="OnScrollToBottomTapped">
-                    <ui:Icon Data="{StaticResource Icon.Back}"
-                             RenderTransform="rotate(270deg)"
-                             Width="18" Height="18"
-                             HorizontalAlignment="Center"
-                             VerticalAlignment="Center"
-                             Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" />
-                </Border>
-            </Grid>
+                            Opacity="0"
+                            Tapped="OnScrollToBottomTapped">
+                        <ui:Icon Data="{StaticResource Icon.Back}"
+                                 RenderTransform="rotate(270deg)"
+                                 Width="18" Height="18"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}" />
+                    </Border>
+                </Grid>
+            </Border>
 
             <!-- Row 2: Bottom SMS Input Bar (Hidden in selection mode); for a blocked sender, the way to unblock -->
             <StackPanel Grid.Row="2"
@@ -1089,138 +1094,138 @@
                     </Grid>
                 </Border>
                 <Grid>
-                <Border x:Name="BlockedBar"
-                        IsVisible="False"
-                        Padding="16,9"
-                        CornerRadius="18"
-                        Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
-                        Tapped="OnUnblockTapped">
-                    <StackPanel Spacing="1" HorizontalAlignment="Center">
-                        <TextBlock Text="{loc:Translate Chat_Unblock}"
-                                   FontSize="14"
-                                   FontFamily="{x:Static app:AppFonts.Bold}"
-                                   Foreground="{theme:AccentBrush Role=Text}"
-                                   TextAlignment="Center" />
-                        <TextBlock Text="{loc:Translate Chat_BlockedHint}"
-                                   FontSize="11"
-                                   Foreground="#8A8F98"
-                                   TextAlignment="Center" />
-                    </StackPanel>
-                </Border>
-                <Border x:Name="NoReplyBar"
-                        IsVisible="False"
-                        Padding="16,12"
-                        CornerRadius="18"
-                        Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}">
-                    <TextBlock Text="{loc:Translate Chat_NoReply}"
-                               FontSize="13"
-                               Foreground="#8A8F98"
-                               TextAlignment="Center" />
-                </Border>
-                <Grid x:Name="Composer" ColumnDefinitions="*,Auto,Auto">
-                    <Border Grid.Column="0"
-                            Padding="12,0,4,0"
-                            MinHeight="44"
-                            CornerRadius="22"
-                            Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
-                            VerticalAlignment="Center"
-                            Tapped="OnInputBarTapped">
-                        <Grid ColumnDefinitions="*,Auto">
-                            <TextBox x:Name="MessageEntry"
-                                     Classes="plain"
-                                     VerticalAlignment="Center"
-                                     Padding="0,10"
-                                     Text="{Binding Draft}"
-                                     PlaceholderText="{loc:Translate Chat_MessageHint}"
-                                     PlaceholderForeground="#8A8F98"
-                                     Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}"
-                                     FontSize="{StaticResource ChatBodySize}"
-                                     AcceptsReturn="True"
-                                     TextWrapping="Wrap"
-                                     MaxHeight="100"
-                                     ScrollViewer.VerticalScrollBarVisibility="Hidden" />
-                            <!-- Opens the emoji panel in place of the keyboard; at the end of the pill, on the last line as the text grows -->
-                            <Border x:Name="EmojiButton"
-                                    Grid.Column="1"
-                                    Width="36" Height="36"
-                                    Margin="4,0,0,4"
-                                    CornerRadius="18"
-                                    Background="Transparent"
-                                    VerticalAlignment="Bottom"
-                                    AutomationProperties.Name="{loc:Translate Chat_Emoji}"
-                                    Tapped="OnEmojiTapped">
-                                <ui:Icon x:Name="EmojiButtonIcon"
-                                         Data="{StaticResource Icon.Emoji}"
-                                         Width="24" Height="24"
-                                         HorizontalAlignment="Center"
-                                         VerticalAlignment="Center"
-                                         Foreground="{theme:ThemeBrush Light=#5E6166, Dark=#9AA0AB}" />
-                            </Border>
-                        </Grid>
-                    </Border>
-                    <Border Grid.Column="1"
-                            Margin="6,0,0,0"
-                            Width="40" Height="40"
-                            CornerRadius="20"
-                            Background="{Binding SimBadgeColor}"
-                            VerticalAlignment="Center"
-                            AutomationProperties.Name="{loc:Translate Chat_Sim}"
-                            Tapped="OnSimTap">
-                        <Panel HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <ui:Icon Data="{StaticResource Icon.SimOutline}"
-                                     Width="28" Height="28"
-                                     Foreground="White" />
-                            <TextBlock x:Name="SimDigit"
-                                       Text="{Binding SimText}"
-                                       FontSize="11"
-                                       FontFamily="{x:Static app:AppFonts.Bold}"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center"
-                                       VerticalAlignment="Center"
-                                       TextAlignment="Center" />
-                        </Panel>
-                    </Border>
-                    <!-- Only with something to send (see UpdateSendButton) -->
-                    <Border x:Name="SendButton"
-                            Grid.Column="2"
-                            Margin="6,0,0,0"
-                            Width="54" Height="44"
-                            CornerRadius="22"
-                            Background="{StaticResource PrimaryBrush}"
-                            VerticalAlignment="Center"
+                    <Border x:Name="BlockedBar"
                             IsVisible="False"
-                            AutomationProperties.Name="{loc:Translate Chat_Send}"
-                            PointerPressed="OnSendPressed"
-                            Holding="OnSendHolding"
-                            Tapped="OnSend">
-                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
-                            <ui:Icon Data="{StaticResource Icon.Send}"
-                                     Width="18" Height="18"
-                                     HorizontalAlignment="Center"
-                                     Foreground="White" />
-                            <TextBlock Text="{loc:Translate Chat_SendLabel}"
-                                       FontSize="9.5"
+                            Padding="16,9"
+                            CornerRadius="18"
+                            Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
+                            Tapped="OnUnblockTapped">
+                        <StackPanel Spacing="1" HorizontalAlignment="Center">
+                            <TextBlock Text="{loc:Translate Chat_Unblock}"
+                                       FontSize="14"
                                        FontFamily="{x:Static app:AppFonts.Bold}"
-                                       Foreground="White"
-                                       HorizontalAlignment="Center" />
+                                       Foreground="{theme:AccentBrush Role=Text}"
+                                       TextAlignment="Center" />
+                            <TextBlock Text="{loc:Translate Chat_BlockedHint}"
+                                       FontSize="11"
+                                       Foreground="#8A8F98"
+                                       TextAlignment="Center" />
                         </StackPanel>
                     </Border>
-                    <!--
+                    <Border x:Name="NoReplyBar"
+                            IsVisible="False"
+                            Padding="16,12"
+                            CornerRadius="18"
+                            Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}">
+                        <TextBlock Text="{loc:Translate Chat_NoReply}"
+                                   FontSize="13"
+                                   Foreground="#8A8F98"
+                                   TextAlignment="Center" />
+                    </Border>
+                    <Grid x:Name="Composer" ColumnDefinitions="*,Auto,Auto">
+                        <Border Grid.Column="0"
+                                Padding="12,0,4,0"
+                                MinHeight="44"
+                                CornerRadius="22"
+                                Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
+                                VerticalAlignment="Center"
+                                Tapped="OnInputBarTapped">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBox x:Name="MessageEntry"
+                                         Classes="plain"
+                                         VerticalAlignment="Center"
+                                         Padding="0,10"
+                                         Text="{Binding Draft}"
+                                         PlaceholderText="{loc:Translate Chat_MessageHint}"
+                                         PlaceholderForeground="#8A8F98"
+                                         Foreground="{theme:ThemeBrush Light=#1B1E24, Dark=#E8EAED}"
+                                         FontSize="{StaticResource ChatBodySize}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         MaxHeight="100"
+                                         ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+                                <!-- Opens the emoji panel in place of the keyboard; at the end of the pill, on the last line as the text grows -->
+                                <Border x:Name="EmojiButton"
+                                        Grid.Column="1"
+                                        Width="36" Height="36"
+                                        Margin="4,0,0,4"
+                                        CornerRadius="18"
+                                        Background="Transparent"
+                                        VerticalAlignment="Bottom"
+                                        AutomationProperties.Name="{loc:Translate Chat_Emoji}"
+                                        Tapped="OnEmojiTapped">
+                                    <ui:Icon x:Name="EmojiButtonIcon"
+                                             Data="{StaticResource Icon.Emoji}"
+                                             Width="24" Height="24"
+                                             HorizontalAlignment="Center"
+                                             VerticalAlignment="Center"
+                                             Foreground="{theme:ThemeBrush Light=#5E6166, Dark=#9AA0AB}" />
+                                </Border>
+                            </Grid>
+                        </Border>
+                        <Border Grid.Column="1"
+                                Margin="6,0,0,0"
+                                Width="40" Height="40"
+                                CornerRadius="20"
+                                Background="{Binding SimBadgeColor}"
+                                VerticalAlignment="Center"
+                                AutomationProperties.Name="{loc:Translate Chat_Sim}"
+                                Tapped="OnSimTap">
+                            <Panel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <ui:Icon Data="{StaticResource Icon.SimOutline}"
+                                         Width="28" Height="28"
+                                         Foreground="White" />
+                                <TextBlock x:Name="SimDigit"
+                                           Text="{Binding SimText}"
+                                           FontSize="11"
+                                           FontFamily="{x:Static app:AppFonts.Bold}"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           TextAlignment="Center" />
+                            </Panel>
+                        </Border>
+                        <!-- Only with something to send (see UpdateSendButton) -->
+                        <Border x:Name="SendButton"
+                                Grid.Column="2"
+                                Margin="6,0,0,0"
+                                Width="54" Height="44"
+                                CornerRadius="22"
+                                Background="{StaticResource PrimaryBrush}"
+                                VerticalAlignment="Center"
+                                IsVisible="False"
+                                AutomationProperties.Name="{loc:Translate Chat_Send}"
+                                PointerPressed="OnSendPressed"
+                                Holding="OnSendHolding"
+                                Tapped="OnSend">
+                            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" IsHitTestVisible="False">
+                                <ui:Icon Data="{StaticResource Icon.Send}"
+                                         Width="18" Height="18"
+                                         HorizontalAlignment="Center"
+                                         Foreground="White" />
+                                <TextBlock Text="{loc:Translate Chat_SendLabel}"
+                                           FontSize="9.5"
+                                           FontFamily="{x:Static app:AppFonts.Bold}"
+                                           Foreground="White"
+                                           HorizontalAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                        <!--
                         Characters left in the current part / parts (see UpdateCounter). Drawn over the free space above
                         the send button, so showing it never moves the composer.
-                    -->
-                    <TextBlock x:Name="SegmentCounter"
-                               Grid.Column="2"
-                               Margin="6,0,0,0"
-                               Width="54"
-                               FontSize="10.5"
-                               Foreground="#8A8F98"
-                               TextAlignment="Center"
-                               VerticalAlignment="Center"
-                               RenderTransform="translate(0px, -34px)"
-                               IsHitTestVisible="False"
-                               IsVisible="False" />
-                </Grid>
+                        -->
+                        <TextBlock x:Name="SegmentCounter"
+                                   Grid.Column="2"
+                                   Margin="6,0,0,0"
+                                   Width="54"
+                                   FontSize="10.5"
+                                   Foreground="#8A8F98"
+                                   TextAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   RenderTransform="translate(0px, -34px)"
+                                   IsHitTestVisible="False"
+                                   IsVisible="False" />
+                    </Grid>
                 </Grid>
                 <!-- Where the emoji panel goes, directly under the box: it replaces the keyboard -->
                 <Panel x:Name="EmojiPanelHost" Margin="-10,6,-10,-12" IsVisible="False" />

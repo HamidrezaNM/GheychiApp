@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Gheychi.App.Localization;
+using Gheychi.App.Theming;
 using Gheychi.App.ViewModels;
 using Gheychi.Core.Services;
 
@@ -127,7 +128,12 @@ public partial class ShareView : UserControl
         _number = isNumber ? query! : string.Empty;
         NumberRow.IsVisible = isNumber;
         if (isNumber)
+        {
             NumberLabel.Text = string.Format(LocalizationManager.Instance["Compose_SendTo"], query);
+            var (background, ink) = AvatarPalette.Resolve(_number);
+            NumberAvatar.Background = background;
+            NumberAvatarIcon.Foreground = ink;
+        }
     }
 
     private static bool LooksLikeNumber(string? text)
