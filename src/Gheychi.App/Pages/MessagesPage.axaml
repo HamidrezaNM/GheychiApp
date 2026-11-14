@@ -257,7 +257,7 @@
                                                              Foreground="{Binding TimeColor}"
                                                              VerticalAlignment="Center" />
                                                     <Border IsVisible="{Binding IsUnread}"
-                                                            Padding="8,2"
+                                                            Padding="8"
                                                             CornerRadius="11"
                                                             Background="{StaticResource PrimaryBrush}">
                                                         <TextBlock Text="{Binding CountText}"

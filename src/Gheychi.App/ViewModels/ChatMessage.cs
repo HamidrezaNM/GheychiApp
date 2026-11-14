@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using System.Globalization;
 using System.Runtime.CompilerServices;
 using Avalonia;
 using Avalonia.Media;
@@ -10,11 +9,9 @@ namespace Gheychi.App.ViewModels;
 
 public sealed class ChatMessage : INotifyPropertyChanged
 {
-    // Avalonia orders corners top-left, top-right, bottom-right, bottom-left (MAUI: ..., bottom-left, bottom-right).
-    private static readonly CornerRadius OutgoingCornersLtr = new(18, 18, 18, 4);
-    private static readonly CornerRadius IncomingCornersLtr = new(18, 18, 4, 18);
-    private static readonly CornerRadius OutgoingCornersRtl = new(18, 18, 4, 18);
-    private static readonly CornerRadius IncomingCornersRtl = new(18, 18, 18, 4);
+    // Avalonia orders corners top-left, top-right, bottom-right, bottom-left.
+    private const double BubbleRadius = 20;
+    private const double JoinedRadius = 4;
 
     private static readonly IBrush IncomingBg = Palette.Pick("#DFE3E8", "#1C1F24");
     private static readonly IBrush TextBrush = Palette.Pick("#1B1E24", "#E8EAED");
@@ -45,12 +42,6 @@ public sealed class ChatMessage : INotifyPropertyChanged
     public static IBrush SimTintBackground(int slot) => SimBackgrounds[Math.Max(0, (slot - 1) % SimBackgrounds.Length)];
 
     public static IBrush SimTintText(int slot) => SimTexts[Math.Max(0, (slot - 1) % SimTexts.Length)];
-
-    public static CornerRadius IncomingCorners =>
-        CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? IncomingCornersRtl : IncomingCornersLtr;
-
-    public static CornerRadius OutgoingCorners =>
-        CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft ? OutgoingCornersRtl : OutgoingCornersLtr;
 
     public static IBrush IncomingBubbleBg => IncomingBg;
     public static IBrush MessageTextColor => TextBrush;
@@ -118,6 +109,31 @@ public sealed class ChatMessage : INotifyPropertyChanged
 
     public bool IsOutgoing { get; init; }
     public bool IsNotOutgoing => !IsOutgoing;
+
+    // Consecutive messages from the same side form one run: only the top and bottom of the run stay round.
+    // The view model sets these from the message's neighbours (see ChatViewModel.UpdateGroupPositions).
+    private bool _isFirstInGroup = true;
+    public bool IsFirstInGroup
+    {
+        get => _isFirstInGroup;
+        set
+        {
+            if (SetField(ref _isFirstInGroup, value))
+                OnPropertyChanged(nameof(BubbleCorners));
+        }
+    }
+
+    private bool _isLastInGroup = true;
+    public bool IsLastInGroup
+    {
+        get => _isLastInGroup;
+        set
+        {
+            if (SetField(ref _isLastInGroup, value))
+                OnPropertyChanged(nameof(BubbleCorners));
+        }
+    }
+
     private string _time = string.Empty;
     public required string Time
     {
@@ -155,7 +171,7 @@ public sealed class ChatMessage : INotifyPropertyChanged
 
     public bool HasReaction => !string.IsNullOrWhiteSpace(_reactionEmoji);
 
-    public Thickness BubblePadding => HasReaction ? new Thickness(10, 7, 10, 16) : new Thickness(10, 7, 10, 7);
+    public Thickness BubblePadding => HasReaction ? new Thickness(14, 10, 14, 19) : new Thickness(14, 10);
     /// <summary>Around a large emoji: no bubble, just room for the search outline, and for the reaction that overlaps its foot.</summary>
     public Thickness EmojiPadding => HasReaction ? new Thickness(4, 2, 4, 14) : new Thickness(4, 2);
 
@@ -329,7 +345,24 @@ public sealed class ChatMessage : INotifyPropertyChanged
         IsTagRevealed = !IsTagRevealed;
     }
 
-    public CornerRadius BubbleCorners => IsOutgoing ? OutgoingCorners : IncomingCorners;
+    /// <summary>
+    /// The bubble's corners. Messages that follow one another from the same side keep the side they sit on
+    /// square where they continue the run: the first keeps its top round, the middle is flat both above and
+    /// below, and the last keeps its bottom round. The whole layout is mirrored in a right-to-left UI, corners
+    /// included, so the flat side stays on the side the bubble sits on.
+    /// </summary>
+    public CornerRadius BubbleCorners
+    {
+        get
+        {
+            var top = IsFirstInGroup ? BubbleRadius : JoinedRadius;
+            var bottom = IsLastInGroup ? BubbleRadius : JoinedRadius;
+            // Outgoing bubbles sit on the right, incoming ones on the left.
+            return IsOutgoing
+                ? new CornerRadius(BubbleRadius, top, bottom, BubbleRadius)
+                : new CornerRadius(top, BubbleRadius, BubbleRadius, bottom);
+        }
+    }
 
     private bool _isDelivered;
     public bool IsDelivered

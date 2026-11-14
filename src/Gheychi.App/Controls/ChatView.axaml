@@ -20,7 +20,7 @@
         <DataTemplate x:Key="IncomingTemplate" x:DataType="vm:ChatMessage">
             <Grid Background="Transparent"
                   ColumnDefinitions="12,Auto,0.8*,0.2*,12"
-                  RowDefinitions="3,Auto,4">
+                  RowDefinitions="1,Auto,2">
                 <Border Grid.Row="1" Grid.Column="1"
                         Width="22" Height="22"
                         Margin="0,0,10,0"
@@ -46,7 +46,7 @@
                                         Padding="{Binding BubblePadding}"
                                         BorderBrush="{Binding SearchStroke}"
                                         StrokeThickness="{Binding SearchStrokeThickness}"
-                                        CornerRadius="16"
+                                        CornerRadius="{Binding BubbleCorners}"
                                         Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
                                         HorizontalAlignment="Left">
                             <TextBlock Classes="body" Text="{Binding Body}"
@@ -73,7 +73,8 @@
                         </Border>
                     </Panel>
 
-                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center"
+                                 IsVisible="{Binding IsLastInGroup}">
                         <TextBlock Text="{Binding Time}"
                                    FontSize="{StaticResource ChatMetaSize}"
                                    Foreground="#8A8F98"
@@ -103,7 +104,7 @@
         <DataTemplate x:Key="IncomingLinkTemplate" x:DataType="vm:ChatMessage">
             <Grid Background="Transparent"
                   ColumnDefinitions="12,Auto,0.8*,0.2*,12"
-                  RowDefinitions="3,Auto,4">
+                  RowDefinitions="1,Auto,2">
                 <Border Grid.Row="1" Grid.Column="1"
                         Width="22" Height="22"
                         Margin="0,0,10,0"
@@ -129,7 +130,7 @@
                                         Padding="{Binding BubblePadding}"
                                         BorderBrush="{Binding SearchStroke}"
                                         StrokeThickness="{Binding SearchStrokeThickness}"
-                                        CornerRadius="16"
+                                        CornerRadius="{Binding BubbleCorners}"
                                         Background="{theme:ThemeBrush Light=#DFE3E8, Dark=#1C1F24}"
                                         HorizontalAlignment="Left">
                             <TextBlock Classes="body" FontSize="{StaticResource ChatBodySize}"
@@ -184,7 +185,8 @@
                         </StackPanel>
                     </Border>
 
-                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center"
+                                 IsVisible="{Binding IsLastInGroup}">
                         <TextBlock Text="{Binding Time}"
                                    FontSize="{StaticResource ChatMetaSize}"
                                    Foreground="#8A8F98"
@@ -213,7 +215,7 @@
         <DataTemplate x:Key="OutgoingTemplate" x:DataType="vm:ChatMessage">
             <Grid Background="Transparent"
                   ColumnDefinitions="12,Auto,0.2*,0.8*,12"
-                  RowDefinitions="3,Auto,4">
+                  RowDefinitions="1,Auto,2">
                 <Border Grid.Row="1" Grid.Column="1"
                         Width="22" Height="22"
                         Margin="0,0,10,0"
@@ -239,7 +241,7 @@
                                         Padding="{Binding BubblePadding}"
                                         BorderBrush="{Binding SearchStroke}"
                                         StrokeThickness="{Binding SearchStrokeThickness}"
-                                        CornerRadius="16"
+                                        CornerRadius="{Binding BubbleCorners}"
                                         Background="{theme:AccentBrush Role=Bubble}"
                                         HorizontalAlignment="Right">
                             <StackPanel Spacing="2">
@@ -248,7 +250,8 @@
                                            FontSize="{StaticResource ChatBodySize}"
                                            TextWrapping="Wrap"
                                            Foreground="{theme:AccentBrush Role=OnBubble}" />
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4"
+                                            IsVisible="{Binding IsLastInGroup}">
                                     <TextBlock Text="★"
                                                FontSize="11"
                                                Foreground="#8F4205"
@@ -320,7 +323,7 @@
         <DataTemplate x:Key="OutgoingLinkTemplate" x:DataType="vm:ChatMessage">
             <Grid Background="Transparent"
                   ColumnDefinitions="12,Auto,0.2*,0.8*,12"
-                  RowDefinitions="3,Auto,4">
+                  RowDefinitions="1,Auto,2">
                 <Border Grid.Row="1" Grid.Column="1"
                         Width="22" Height="22"
                         Margin="0,0,10,0"
@@ -346,7 +349,7 @@
                                         Padding="{Binding BubblePadding}"
                                         BorderBrush="{Binding SearchStroke}"
                                         StrokeThickness="{Binding SearchStrokeThickness}"
-                                        CornerRadius="16"
+                                        CornerRadius="{Binding BubbleCorners}"
                                         Background="{theme:AccentBrush Role=Bubble}"
                                         HorizontalAlignment="Right">
                             <StackPanel Spacing="2">
@@ -355,7 +358,8 @@
                                            Foreground="{theme:AccentBrush Role=OnBubble}"
                                            c:RichText.LinkBrush="{theme:AccentBrush Role=OnBubbleLink}"
                                            c:RichText.Message="{Binding}" />
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4"
+                                            IsVisible="{Binding IsLastInGroup}">
                                     <TextBlock Text="★"
                                                FontSize="11"
                                                Foreground="#8F4205"
@@ -427,7 +431,7 @@
         <DataTemplate x:Key="EmojiIncomingTemplate" x:DataType="vm:ChatMessage">
             <Grid Background="Transparent"
                   ColumnDefinitions="12,Auto,0.8*,0.2*,12"
-                  RowDefinitions="3,Auto,4">
+                  RowDefinitions="1,Auto,2">
                 <Border Grid.Row="1" Grid.Column="1"
                         Width="22" Height="22"
                         Margin="0,0,10,0"
@@ -453,7 +457,7 @@
                                         Padding="{Binding EmojiPadding}"
                                         BorderBrush="{Binding SearchStroke}"
                                         StrokeThickness="{Binding SearchStrokeThickness}"
-                                        CornerRadius="16"
+                                        CornerRadius="{Binding BubbleCorners}"
                                         Background="Transparent"
                                         HorizontalAlignment="Left">
                             <TextBlock Text="{Binding Body}"
@@ -478,7 +482,8 @@
                         </Border>
                     </Panel>
 
-                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center"
+                                 IsVisible="{Binding IsLastInGroup}">
                         <TextBlock Text="{Binding Time}"
                                    FontSize="{StaticResource ChatMetaSize}"
                                    Foreground="#8A8F98"
@@ -507,7 +512,7 @@
         <DataTemplate x:Key="EmojiOutgoingTemplate" x:DataType="vm:ChatMessage">
             <Grid Background="Transparent"
                   ColumnDefinitions="12,Auto,0.2*,0.8*,12"
-                  RowDefinitions="3,Auto,4">
+                  RowDefinitions="1,Auto,2">
                 <Border Grid.Row="1" Grid.Column="1"
                         Width="22" Height="22"
                         Margin="0,0,10,0"
@@ -533,7 +538,7 @@
                                         Padding="{Binding EmojiPadding}"
                                         BorderBrush="{Binding SearchStroke}"
                                         StrokeThickness="{Binding SearchStrokeThickness}"
-                                        CornerRadius="16"
+                                        CornerRadius="{Binding BubbleCorners}"
                                         Background="Transparent"
                                         HorizontalAlignment="Right">
                             <TextBlock Text="{Binding Body}"
@@ -558,7 +563,8 @@
                         </Border>
                     </Panel>
 
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4">
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="4"
+                                IsVisible="{Binding IsLastInGroup}">
                         <TextBlock Text="★"
                                    FontSize="11"
                                    Foreground="#F59E0B"

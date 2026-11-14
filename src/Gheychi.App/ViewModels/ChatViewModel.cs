@@ -703,6 +703,8 @@ public sealed class ChatViewModel : INotifyPropertyChanged
         if (lastIncoming != null)
             lastIncoming.IsLastMessage = true;
 
+        // Decided before the list builds its rows, so every bubble starts with the corners it keeps.
+        UpdateGroupPositions(data.Items);
         Items.Reset(data.Items);
         Messages.Reset(data.Messages);
         StickyDate = data.StickyDate;
@@ -854,6 +856,8 @@ public sealed class ChatViewModel : INotifyPropertyChanged
         // RecyclerView shifts existing rows instead of rebinding everything.
         Items.PrependRange(page.Items);
         Messages.PrependRange(page.Messages);
+        // The run that crosses the page boundary changes shape, so positions are refreshed with the new rows.
+        UpdateGroupPositions(Items);
         if (Search.IsActive)
             RefreshSearchMarks();
 
@@ -974,6 +978,7 @@ public sealed class ChatViewModel : INotifyPropertyChanged
             Messages.Remove(bubble);
         }
 
+        UpdateGroupPositions(Items);
         RemoveEmptyDaySeparators();
         _ = RefreshNewestAsync();
     }
@@ -995,6 +1000,7 @@ public sealed class ChatViewModel : INotifyPropertyChanged
             }
         }
 
+        UpdateGroupPositions(Items);
         RemoveEmptyDaySeparators();
         var text = string.Join("\n", taken.Select(m => m.Text));
         if (text.Length > 0)
@@ -1376,17 +1382,48 @@ public sealed class ChatViewModel : INotifyPropertyChanged
         _ = _smsService.MarkThreadAsReadAsync(Thread.ThreadId);
     }
 
+    /// <summary>
+    /// Marks each message as the start or end of a run of consecutive messages from the same side. Those two
+    /// flags decide the bubble's corners (see <see cref="ChatMessage.BubbleCorners"/>), and the last one also
+    /// holds the time and state under (or inside) the bubble: a message in the middle of a run carries neither,
+    /// so the run reads as one block. They are refreshed after any change to the list: a page added, a message
+    /// appended, or messages removed. A day header or the unread marker between two messages ends the run: the
+    /// bubbles do not touch across it.
+    /// </summary>
+    private static void UpdateGroupPositions(IReadOnlyList<object> rows)
+    {
+        for (var i = 0; i < rows.Count; i++)
+        {
+            if (rows[i] is not ChatMessage message)
+                continue;
+
+            var above = i > 0 && rows[i - 1] is ChatMessage previous ? previous : null;
+            var below = i + 1 < rows.Count && rows[i + 1] is ChatMessage next ? next : null;
+            message.IsFirstInGroup = above is null || above.IsOutgoing != message.IsOutgoing;
+            message.IsLastInGroup = below is null || below.IsOutgoing != message.IsOutgoing;
+        }
+    }
+
     // Adds a message at the bottom, under a new day header when it is the first message of its day.
     // Decided against the last message on screen, not the fetched page: a sent bubble is shown before
     // its row is stored, so the page cannot tell which days the list already has a header for.
     private void AppendMessage(ChatMessage message)
     {
         var previous = Messages.Count > 0 ? Messages[^1] : null;
-        if (previous is null || previous.Timestamp.Date != message.Timestamp.Date)
+        var newDay = previous is null || previous.Timestamp.Date != message.Timestamp.Date;
+        if (newDay)
         {
             var text = _dateFormatter.FormatDateSeparator(message.Timestamp, DateTime.Now, CultureInfo.CurrentUICulture);
             Items.Add(new DateSeparatorItem(text));
         }
+
+        // Only the run at the bottom changed: the message that was last may now have one below it. A day
+        // header between them means the new message starts a run of its own.
+        var startsGroup = newDay || previous is null || previous.IsOutgoing != message.IsOutgoing;
+        message.IsFirstInGroup = startsGroup;
+        message.IsLastInGroup = true;
+        if (previous is not null)
+            previous.IsLastInGroup = startsGroup;
 
         Items.Add(message);
         Messages.Add(message);
@@ -1637,6 +1674,7 @@ public sealed class ChatViewModel : INotifyPropertyChanged
         {
             Items.Remove(message);
             Messages.Remove(message);
+            UpdateGroupPositions(Items);
             RemoveEmptyDaySeparators();
             ShiftLoadedCount(-1);
             EvictCache(Thread.ThreadId);
@@ -1674,6 +1712,7 @@ public sealed class ChatViewModel : INotifyPropertyChanged
 
                 if (gone.Count > 0)
                 {
+                    UpdateGroupPositions(Items);
                     RemoveEmptyDaySeparators();
                     ShiftLoadedCount(-gone.Count);
                 }
@@ -1705,6 +1744,7 @@ public sealed class ChatViewModel : INotifyPropertyChanged
                 Items.Remove(msg);
                 Messages.Remove(msg);
             }
+            UpdateGroupPositions(Items);
             RemoveEmptyDaySeparators();
             ExitSelectionMode();
             ShiftLoadedCount(-selected.Count);
